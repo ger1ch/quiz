@@ -3,7 +3,7 @@ import { HeroScreen } from './components/quiz/HeroScreen';
 import { QuizScreen } from './components/quiz/QuizScreen';
 import { ResultScreen } from './components/quiz/ResultScreen';
 import { questions } from './data/questions';
-import type { QuizResult } from './types/quiz';
+import type { QuizResult, Question } from './types/quiz';
 
 function App() {
   const [screen, setScreen] = useState<'hero' | 'quiz' | 'result'>('hero');
@@ -14,7 +14,7 @@ function App() {
   const handleComplete = (answers: Record<number, string>, time: number) => {
     let correct = 0;
 
-    questions.forEach((q) => {
+    questions.forEach((q: Question) => {
       if (answers[q.id] === q.correctAnswer) correct++;
     });
 
