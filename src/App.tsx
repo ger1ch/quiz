@@ -1,0 +1,53 @@
+import { useState } from 'react';
+import { HeroScreen } from './components/quiz/HeroScreen';
+import { QuizScreen } from './components/quiz/QuizScreen';
+import { ResultScreen } from './components/quiz/ResultScreen';
+import { questions } from './data/questions';
+import type { QuizResult } from './types/quiz';
+
+function App() {
+  const [screen, setScreen] = useState<'hero' | 'quiz' | 'result'>('hero');
+  const [result, setResult] = useState<QuizResult | null>(null);
+
+  const handleStart = () => setScreen('quiz');
+
+  const handleComplete = (answers: Record<number, string>, time: number) => {
+    let correct = 0;
+
+    questions.forEach((q) => {
+      if (answers[q.id] === q.correctAnswer) correct++;
+    });
+
+    const grade =
+      correct >= 8 ? 'gold' : correct >= 5 ? 'silver' : 'bronze';
+
+    setResult({
+      correct,
+      total: questions.length,
+      wrong: questions.length - correct,
+      timeSeconds: time,
+      grade,
+    });
+
+    setScreen('result');
+  };
+
+  const handleRestart = () => {
+    setScreen('hero');
+    setResult(null);
+  };
+
+  return (
+    <>
+      {screen === 'hero' && <HeroScreen onStart={handleStart} />}
+      {screen === 'quiz' && (
+        <QuizScreen questions={questions} onComplete={handleComplete} />
+      )}
+      {screen === 'result' && result && (
+        <ResultScreen result={result} onRestart={handleRestart} />
+      )}
+    </>
+  );
+}
+
+export default App;
